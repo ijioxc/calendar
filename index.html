@@ -7,77 +7,112 @@
 <meta name="description" content="115 機械工程系學會每月封面與行事曆。AI 助手請閱讀本頁「給 AI 助手的說明」，把行事曆文字轉成網址回覆給使用者。">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&family=Oswald:wght@400;500&display=swap">
 <style>
-/* Layout: dark concrete stage; header with month switch, two tabs (封面 / 行事曆), one large image per tab with its download button. */
+/* Shell follows Apple HIG: system font, grouped backgrounds, translucent bar, segmented control, inset-grouped cards. Light + dark. The poster below keeps its own fixed look. */
 :root{
-  color-scheme:dark;
-  --ground:#121213; --panel:#1b1b1c; --field:#252526; --rule:#39393b;
-  --ink:#ecebe7; --dim:#a19f9a; --accent:#a3201f; --accent-ink:#fff4f2; --ok:#8fc7a5;
-  --ui-font:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
-  --num-font:Oswald,"Noto Sans TC",sans-serif;
+  color-scheme:light dark;
+  --bg:#f2f2f7; --card:#fff; --fill:rgba(118,118,128,.12); --fill2:rgba(118,118,128,.2);
+  --label:#000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3); --sep:rgba(60,60,67,.29);
+  --bar:rgba(249,249,249,.8); --seg-on:#fff; --seg-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);
+  --tint:#b3261e; --tint-ink:#fff; --green:#248a3d;
+  --shadow:0 8px 30px rgba(0,0,0,.14);
+  --ui-font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC",system-ui,sans-serif;
   --red:#7c1010; --line:rgba(112,18,18,.92);
 }
-*{box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000; --card:#1c1c1e; --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.32);
+  --label:#fff; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3); --sep:rgba(84,84,88,.65);
+  --bar:rgba(22,22,23,.8); --seg-on:#636366; --seg-shadow:0 3px 8px rgba(0,0,0,.12);
+  --tint:#ff453a; --tint-ink:#fff; --green:#30d158; --shadow:0 8px 30px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --bg:#000; --card:#1c1c1e; --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.32);
+  --label:#fff; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3); --sep:rgba(84,84,88,.65);
+  --bar:rgba(22,22,23,.8); --seg-on:#636366; --seg-shadow:0 3px 8px rgba(0,0,0,.12);
+  --tint:#ff453a; --tint-ink:#fff; --green:#30d158; --shadow:0 8px 30px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.55 var(--ui-font);min-height:100vh}
+body{margin:0;background:var(--bg);color:var(--label);font:17px/1.35 var(--ui-font);letter-spacing:-.01em;min-height:100vh;-webkit-font-smoothing:antialiased}
 
-header{position:sticky;top:0;z-index:5;background:rgba(18,18,19,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);padding:10px 16px 0;display:grid;gap:8px}
+/* navigation bar */
+header{position:sticky;top:0;z-index:5;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);padding:calc(env(safe-area-inset-top) + 8px) 16px 10px;display:grid;gap:10px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;width:100%;margin:0 auto}
-.brand{margin:0;font-size:15px;font-weight:500;letter-spacing:.25em;white-space:nowrap}
-.brand small{display:block;font-size:11px;color:var(--dim);letter-spacing:.2em;font-weight:400}
-.month{display:flex;align-items:center;gap:6px}
-.month b{font:500 20px/1 var(--num-font);letter-spacing:.04em;min-width:96px;text-align:center;font-variant-numeric:tabular-nums}
-.tabs{display:flex;gap:4px;max-width:1100px;width:100%;margin:0 auto}
-.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;color:var(--dim);padding:8px 16px 10px;font-size:15px;letter-spacing:.3em}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-@media(max-width:420px){.brand{font-size:13px;letter-spacing:.12em}.month b{min-width:80px;font-size:17px}}
+.brand{margin:0;font-size:22px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.brand small{display:block;font-size:13px;color:var(--label2);font-weight:400;letter-spacing:0;margin-top:1px}
+.month{display:flex;align-items:center;gap:2px}
+.month b{font-size:17px;font-weight:600;min-width:92px;text-align:center;font-variant-numeric:tabular-nums}
+@media(max-width:420px){.brand{font-size:19px}.month b{min-width:80px;font-size:16px}}
 
-main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
-.view{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
-.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+/* segmented control */
+.tabs{display:grid;grid-template-columns:1fr 1fr;padding:2px;border-radius:9px;background:var(--fill);max-width:360px;width:100%;margin:0 auto}
+.tabs button{border:0;border-radius:7px;background:none;color:var(--label);min-height:32px;padding:0 12px;font:500 14px/1 var(--ui-font);letter-spacing:0;transition:background .2s,box-shadow .2s}
+.tabs button[aria-selected="true"]{background:var(--seg-on);box-shadow:var(--seg-shadow);font-weight:600}
+
+main{max-width:1100px;margin:0 auto;padding:20px 16px calc(48px + env(safe-area-inset-bottom))}
+.view{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
+.side{display:flex;flex-direction:column;gap:20px;min-width:0}
 .frame{display:flex;justify-content:center;min-width:0}
-@media(max-width:860px){.view{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:860px){.view{grid-template-columns:minmax(0,1fr);gap:24px}}
 
-#coverImg{display:block;width:100%;max-width:min(560px,calc((100vh - 170px)*.8));aspect-ratio:1080/1350;object-fit:cover;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.6);background:#6f6e6a}
-.nocover{width:100%;max-width:420px;aspect-ratio:1080/1350;border:1px dashed var(--rule);border-radius:6px;display:grid;place-items:center;color:var(--dim)}
+#coverImg{display:block;width:100%;max-width:min(560px,calc((100vh - 190px)*.8));aspect-ratio:1080/1350;object-fit:cover;border-radius:14px;box-shadow:var(--shadow);background:var(--fill)}
+.nocover{width:100%;max-width:420px;aspect-ratio:1080/1350;border-radius:14px;background:var(--card);display:grid;place-items:center;color:var(--label2);font-size:15px}
 
-h2{margin:0;font-size:14px;font-weight:700}
-.side p{margin:0;color:var(--dim);font-size:12.5px}
-textarea,input[type=text]{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px;line-height:1.6}
+/* inset grouped content */
+.group{background:var(--card);border-radius:12px;overflow:hidden}
+.group>.row{padding:12px 16px}
+.group>.row+.row{border-top:.5px solid var(--sep);margin-left:16px;padding-left:0}
+h2{margin:0;font-size:22px;font-weight:700;letter-spacing:.01em}
+.hint{margin:6px 0 0;color:var(--label2);font-size:15px}
+.foot{margin:0;padding:0 16px;color:var(--label2);font-size:13px}
+textarea,input[type=text]{width:100%;background:var(--fill);color:var(--label);border:0;border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;line-height:1.5}
 textarea{resize:vertical}
 #lines{min-height:220px;font-variant-numeric:tabular-nums}
-textarea:focus-visible,input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-button{background:var(--field);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 13px;font:inherit;cursor:pointer}
-button:hover:not(:disabled){border-color:#67676b}
-button:disabled{opacity:.55;cursor:default}
-button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500;padding:11px 18px;font-size:15px}
-button.icon{width:36px;height:36px;padding:0;font-size:18px;line-height:1}
+textarea:focus-visible,input:focus-visible{outline:2px solid var(--tint);outline-offset:0}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--tint);outline-offset:2px}
+button{background:var(--fill);color:var(--tint);border:0;border-radius:10px;min-height:44px;padding:0 16px;font:500 17px/1 var(--ui-font);cursor:pointer;transition:opacity .15s,transform .15s}
+button:active:not(:disabled){opacity:.6}
+button:disabled{opacity:.35;cursor:default}
+button.pri{width:100%;min-height:50px;border-radius:12px;background:var(--tint);color:var(--tint-ink);font-weight:600}
+button.icon{width:44px;height:44px;min-height:44px;padding:0;background:none;color:var(--tint);font-size:28px;font-weight:400;line-height:1;border-radius:22px}
+button.link{width:100%;background:none;min-height:44px;padding:0;border-radius:0;display:flex;justify-content:space-between;align-items:center;font-weight:400;color:var(--label)}
+button.link::after,summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--label3);border-bottom:2px solid var(--label3);transform:rotate(-45deg);margin-right:4px;transition:transform .2s}
 .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.status{font-size:12.5px;color:var(--dim)}
-.status.ok{color:var(--ok)}
-details{border-top:1px solid var(--rule);padding-top:12px}
-summary{cursor:pointer;color:var(--ink);font-size:14px}
-.inner{display:grid;gap:10px;margin-top:10px}
-.fmt{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:12.5px;color:var(--dim)}
-code{background:var(--field);color:var(--ink);padding:1px 6px;border-radius:4px;font-family:inherit}
-label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
+.status{font-size:13px;color:var(--label2);min-height:18px;text-align:center;width:100%}
+.status.ok{color:var(--green)}
+details>summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:space-between;font-size:17px}
+details>summary::-webkit-details-marker{display:none}
+details[open]>summary::after{transform:rotate(45deg)}
+.inner{display:grid;gap:12px;padding:4px 0 8px}
+.inner>p{margin:0;color:var(--label2);font-size:15px}
+.fmt{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:14px;color:var(--label2)}
+code{background:var(--fill);color:var(--label);padding:2px 6px;border-radius:5px;font-family:inherit}
+label{display:grid;gap:6px;font-size:13px;color:var(--label2)}
+button.plain{align-self:start;background:none;padding:0;min-height:44px;color:var(--tint);font-weight:400}
 
-.aitext{font-size:12.5px;color:var(--dim)}
+.aitext{font-size:15px;color:var(--label2);line-height:1.45}
 .aitext p,.aitext ol,.aitext ul{margin:0}
-.aitext ol,.aitext ul{padding-left:20px;display:grid;gap:3px}
-.aitext b{color:var(--ink)}
-.aitext pre{background:var(--field);color:var(--ink);border-radius:4px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;margin:0;font-family:inherit}
+.aitext ol,.aitext ul{padding-left:20px;display:grid;gap:4px}
+.aitext b{color:var(--label);font-weight:600}
+.aitext pre{background:var(--fill);color:var(--label);border-radius:10px;padding:10px 12px;white-space:pre-wrap;word-break:break-all;margin:0;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
 
-#shot{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;z-index:10}
-#shot img{max-height:78%;max-width:100%;border-radius:8px}
-#shot p{margin:0}
+/* save sheet */
+#shot{position:fixed;inset:0;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:92vh;border-radius:14px 14px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:12px}
+.sheet .grab{width:36px;height:5px;border-radius:3px;background:var(--label3)}
+.sheet .bar2{width:100%;display:flex;justify-content:space-between;align-items:center}
+.sheet .bar2 b{font-size:17px;font-weight:600}
+.sheet .bar2 button{background:none;padding:0 4px;font-weight:600}
+#shot img{max-height:70vh;max-width:100%;border-radius:10px;box-shadow:var(--shadow)}
+#shot p{margin:0;color:var(--label2);font-size:13px}
 
 /* ---------- poster ---------- */
-#poster{position:relative;flex:none;background:#a9a7a1 url("bg.jpg") center/100% 100%;border-radius:calc(var(--u)*30);overflow:hidden;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:"Noto Sans TC","PingFang TC",sans-serif;user-select:none}
+#poster{position:relative;flex:none;background:#a9a7a1 url("bg.jpg?v=2") center/100% 100%;overflow:hidden;
+  box-shadow:var(--shadow);font-family:"Noto Sans TC","PingFang TC",sans-serif;user-select:none}
 #poster>*{position:absolute}
 .notes{left:29.4%;top:16%;right:15%;font-weight:300;font-size:calc(var(--u)*17);line-height:1.85;letter-spacing:.3em;color:rgba(244,242,237,.94);white-space:pre-wrap;text-shadow:0 0 calc(var(--u)*1) rgba(0,0,0,.18)}
 .footer{right:9%;bottom:1.4%;font-weight:300;font-size:calc(var(--u)*21);letter-spacing:.85em;color:rgba(238,236,231,.9);white-space:nowrap;margin-right:2.85em}
-.wk{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;font:500 calc(var(--u)*23)/1 Oswald,"Noto Sans TC",sans-serif;color:#66645f;letter-spacing:.02em}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;font:500 calc(var(--u)*23)/1 Oswald,"Noto Sans TC",sans-serif;color:#45443f;letter-spacing:.02em}
 .wk span{padding-left:calc(var(--u)*7);padding-bottom:calc(var(--u)*2)}
 .layer{display:grid;grid-template-columns:repeat(7,1fr)}
 .fills,.fx{pointer-events:none;display:block}
@@ -103,12 +138,12 @@ label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
   <div class="top">
     <h1 class="brand">115 機械工程系學會<small>每月封面 · 行事曆</small></h1>
     <div class="month">
-      <button class="icon" id="prev" aria-label="上個月">‹</button>
+      <button class="icon" id="prev" aria-label="上個月"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 2 10l8 8"/></svg></button>
       <b id="mlabel"></b>
-      <button class="icon" id="next" aria-label="下個月">›</button>
+      <button class="icon" id="next" aria-label="下個月"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 2 8 8-8 8"/></svg></button>
     </div>
   </div>
-  <nav class="tabs" role="tablist">
+  <nav class="tabs" role="tablist" aria-label="檢視">
     <button role="tab" id="tabCover" aria-selected="true">封面</button>
     <button role="tab" id="tabCal" aria-selected="false">行事曆</button>
   </nav>
@@ -118,23 +153,23 @@ label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
   <section class="view" id="viewCover">
     <div class="frame"><img id="coverImg" alt="本月封面"><div class="nocover" id="noCover" hidden>這個月還沒有封面</div></div>
     <div class="side">
-      <h2>本月封面</h2>
-      <p>下載後可直接當 IG 貼文第一張。</p>
-      <div class="btns"><button class="pri" id="coverDl">下載封面</button></div>
-      <div class="btns"><button id="goCal">看行事曆 ›</button></div>
+      <div><h2>本月封面</h2><p class="hint">下載後可直接當 IG 貼文第一張。</p></div>
+      <button class="pri" id="coverDl">下載封面</button>
+      <div class="group"><div class="row"><button class="link" id="goCal">看行事曆</button></div></div>
     </div>
   </section>
 
   <section class="view" id="viewCal" hidden>
     <div class="frame" id="stage"><div id="poster"></div></div>
     <div class="side">
-      <h2>本月行事曆</h2>
+      <div><h2>本月行事曆</h2><p class="hint">下載 PNG，直接發 IG。</p></div>
       <div class="btns"><button class="pri" id="png">下載行事曆</button><span class="status" id="pngStatus"></span></div>
 
-      <details id="editBox">
+      <div class="group">
+      <details id="editBox" class="row">
         <summary>編輯本月內容</summary>
         <div class="inner">
-          <p>月曆會跟著這裡即時更新。點月曆上的日期，會在這裡加一行。修改只存在你自己的瀏覽器。</p>
+          <p>月曆會跟著這裡即時更新。點月曆上的日期，會在這裡加一行。</p>
           <textarea id="lines" spellcheck="false"></textarea>
           <ul class="fmt">
             <li><code>10/10 國慶日</code> 單日紅底</li>
@@ -143,12 +178,12 @@ label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
             <li><code>線 10/12-10/31 停修 白</code> 期間線：白、藍、黑、紅</li>
             <li>沒有日期開頭的行 → 上方說明區</li>
           </ul>
-          <div class="btns"><button id="resetMonth">還原成公告版本</button></div>
           <label>底部署名<input type="text" id="footer"></label>
+          <button class="plain" id="resetMonth">還原成公告版本</button>
         </div>
       </details>
 
-      <details id="ai">
+      <details id="ai" class="row">
         <summary>用 AI 做新月份</summary>
         <div class="inner aitext">
 <p>在 ChatGPT、Claude 或 Gemini 輸入：「照這個網址的說明做 11 月行事曆：https://ijioxc.github.io/calendar/」，再貼上學校行事曆文字。AI 會回一個連結，點開就是做好的月曆。</p>
@@ -187,11 +222,13 @@ label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
 <pre>https://ijioxc.github.io/calendar/#2026-10;申請課程停修：;10/12（一）-12/24（四）;;申請休退學，學雜費退還三分之一：;10/19（一）-11/29（日）;;10/9-10/11_國慶日_拆;10/24-10/26_光復節_拆;線_10/12-10/31_課程停修_白;線_10/19-10/31_休退學_藍</pre>
         </div>
       </details>
+      </div>
+      <p class="foot">修改只存在你自己的瀏覽器。</p>
     </div>
   </section>
 </main>
 
-<div id="shot" hidden><img id="shotImg" alt="圖片"><p>長按或右鍵圖片即可儲存</p><button id="shotClose">關閉</button></div>
+<div id="shot" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shotTitle"><span class="grab"></span><div class="bar2"><span></span><b id="shotTitle">儲存圖片</b><button id="shotClose">完成</button></div><img id="shotImg" alt="圖片"><p>長按圖片即可存到相簿</p></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -213,7 +250,7 @@ const COVER_V=2; /* 換封面圖時加 1，避免瀏覽器用舊圖 */
 
 const $=id=>document.getElementById(id);
 const pad=n=>String(n).padStart(2,'0');
-const W=928,RATIO=1152/928,G={x:14.762,y:37.5,w:70.474,h:42.014};
+const W=928,RATIO=1153/928,G={x:15.893,y:38.049,w:75.696,h:45.005};
 const WK=['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const BAR={白:'#f3f3f0',藍:'#a9d4df',黑:'#232323',紅:'#7c1010'};
 const LABEL={白:'#2e2e2e',藍:'#86bccb',黑:'#232323',紅:'#7c1010'};
@@ -322,7 +359,7 @@ function render(){
 }
 function fitPoster(){
   if($('viewCal').hidden)return;
-  const aw=$('stage').clientWidth,ah=innerHeight-150;
+  const aw=$('stage').clientWidth,ah=innerHeight-document.querySelector('header').offsetHeight-44;
   const w=Math.max(260,Math.min(aw,ah/RATIO,640));
   poster.style.width=w+'px';poster.style.height=(w*RATIO)+'px';poster.style.setProperty('--u',(w/W)+'px');
 }
@@ -384,6 +421,8 @@ function save(blob,name){
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);return true;
 }
 $('shotClose').onclick=()=>{$('shot').hidden=true};
+$('shot').onclick=e=>{if(e.target===$('shot'))$('shot').hidden=true};
+addEventListener('keydown',e=>{if(e.key==='Escape')$('shot').hidden=true});
 $('coverDl').onclick=async()=>{
   const r=await fetch('covers/'+cur.m+'.jpg?v='+COVER_V);save(await r.blob(),`封面-${mk()}.jpg`);
 };
