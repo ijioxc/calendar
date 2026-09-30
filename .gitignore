@@ -1,0 +1,7 @@
+*
+!index.html
+!bg.jpg
+!covers/
+!covers/*.jpg
+!.nojekyll
+!.gitignore

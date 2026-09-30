@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>機械系學會月曆</title>
+<meta name="description" content="115 機械工程系學會每月封面與行事曆。AI 助手請閱讀本頁「給 AI 助手的說明」，把行事曆文字轉成網址回覆給使用者。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&family=Oswald:wght@400;500&display=swap">
+<style>
+/* Layout: dark concrete stage; header with month switch, two tabs (封面 / 行事曆), one large image per tab with its download button. */
+:root{
+  color-scheme:dark;
+  --ground:#121213; --panel:#1b1b1c; --field:#252526; --rule:#39393b;
+  --ink:#ecebe7; --dim:#a19f9a; --accent:#a3201f; --accent-ink:#fff4f2; --ok:#8fc7a5;
+  --ui-font:"Noto Sans TC","PingFang TC",system-ui,sans-serif;
+  --num-font:Oswald,"Noto Sans TC",sans-serif;
+  --red:#7c1010; --line:rgba(112,18,18,.92);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.55 var(--ui-font);min-height:100vh}
+
+header{position:sticky;top:0;z-index:5;background:rgba(18,18,19,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);padding:10px 16px 0;display:grid;gap:8px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;width:100%;margin:0 auto}
+.brand{margin:0;font-size:15px;font-weight:500;letter-spacing:.25em;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--dim);letter-spacing:.2em;font-weight:400}
+.month{display:flex;align-items:center;gap:6px}
+.month b{font:500 20px/1 var(--num-font);letter-spacing:.04em;min-width:96px;text-align:center;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:4px;max-width:1100px;width:100%;margin:0 auto}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;color:var(--dim);padding:8px 16px 10px;font-size:15px;letter-spacing:.3em}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+@media(max-width:420px){.brand{font-size:13px;letter-spacing:.12em}.month b{min-width:80px;font-size:17px}}
+
+main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+.view{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.frame{display:flex;justify-content:center;min-width:0}
+@media(max-width:860px){.view{grid-template-columns:minmax(0,1fr)}}
+
+#coverImg{display:block;width:100%;max-width:min(560px,calc((100vh - 170px)*.8));aspect-ratio:1080/1350;object-fit:cover;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.6);background:#6f6e6a}
+.nocover{width:100%;max-width:420px;aspect-ratio:1080/1350;border:1px dashed var(--rule);border-radius:6px;display:grid;place-items:center;color:var(--dim)}
+
+h2{margin:0;font-size:14px;font-weight:700}
+.side p{margin:0;color:var(--dim);font-size:12.5px}
+textarea,input[type=text]{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px;line-height:1.6}
+textarea{resize:vertical}
+#lines{min-height:220px;font-variant-numeric:tabular-nums}
+textarea:focus-visible,input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{background:var(--field);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 13px;font:inherit;cursor:pointer}
+button:hover:not(:disabled){border-color:#67676b}
+button:disabled{opacity:.55;cursor:default}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500;padding:11px 18px;font-size:15px}
+button.icon{width:36px;height:36px;padding:0;font-size:18px;line-height:1}
+.btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.status{font-size:12.5px;color:var(--dim)}
+.status.ok{color:var(--ok)}
+details{border-top:1px solid var(--rule);padding-top:12px}
+summary{cursor:pointer;color:var(--ink);font-size:14px}
+.inner{display:grid;gap:10px;margin-top:10px}
+.fmt{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:12.5px;color:var(--dim)}
+code{background:var(--field);color:var(--ink);padding:1px 6px;border-radius:4px;font-family:inherit}
+label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
+
+.aitext{font-size:12.5px;color:var(--dim)}
+.aitext p,.aitext ol,.aitext ul{margin:0}
+.aitext ol,.aitext ul{padding-left:20px;display:grid;gap:3px}
+.aitext b{color:var(--ink)}
+.aitext pre{background:var(--field);color:var(--ink);border-radius:4px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;margin:0;font-family:inherit}
+
+#shot{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;z-index:10}
+#shot img{max-height:78%;max-width:100%;border-radius:8px}
+#shot p{margin:0}
+
+/* ---------- poster ---------- */
+#poster{position:relative;flex:none;background:#a9a7a1 url("bg.jpg") center/100% 100%;border-radius:calc(var(--u)*30);overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:"Noto Sans TC","PingFang TC",sans-serif;user-select:none}
+#poster>*{position:absolute}
+.notes{left:29.4%;top:16%;right:15%;font-weight:300;font-size:calc(var(--u)*17);line-height:1.85;letter-spacing:.3em;color:rgba(244,242,237,.94);white-space:pre-wrap;text-shadow:0 0 calc(var(--u)*1) rgba(0,0,0,.18)}
+.footer{right:9%;bottom:1.4%;font-weight:300;font-size:calc(var(--u)*21);letter-spacing:.85em;color:rgba(238,236,231,.9);white-space:nowrap;margin-right:2.85em}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;font:500 calc(var(--u)*23)/1 Oswald,"Noto Sans TC",sans-serif;color:#222;letter-spacing:.02em}
+.wk span{padding-left:calc(var(--u)*7);padding-bottom:calc(var(--u)*2)}
+.layer{display:grid;grid-template-columns:repeat(7,1fr)}
+.fills,.fx{pointer-events:none;display:block}
+.fills>i,.fx>*{position:absolute}
+.fills>i{background:rgba(124,14,14,.95)}
+.cell{position:relative;border-right:calc(var(--u)*1.3) solid var(--line);border-bottom:calc(var(--u)*1.3) solid var(--line)}
+.editing .cell{cursor:pointer}
+.editing .cell:hover{background:rgba(255,255,255,.12)}
+.cell.lc{border-right:0}.cell.lr{border-bottom:0}
+.num{position:absolute;left:calc(var(--u)*7);top:calc(var(--u)*5);font-weight:500;font-size:calc(var(--u)*13.5);line-height:1;color:var(--red);letter-spacing:.02em}
+.num.lt{color:#f1e4e4}
+.cell.adj .num{opacity:.5}
+.et{display:flex;align-items:center;justify-content:center;text-align:center;padding-top:calc(var(--u)*13);font-weight:100;line-height:1.22;letter-spacing:.12em;text-indent:.12em}
+.et.fillc{color:#f7eded}.et.plain{color:var(--red);font-weight:400}.et.lt{color:rgba(250,250,247,.93)}
+.bar{height:calc(var(--u)*4.4);border-top:calc(var(--u)*1.4) solid;border-bottom:calc(var(--u)*1.4) solid;transform:translateY(-50%)}
+.blabel{right:100%;transform:translateY(-100%);padding-bottom:calc(var(--u)*3);font-weight:400;font-size:calc(var(--u)*15.5);letter-spacing:.3em;white-space:nowrap;padding-right:calc(var(--u)*8)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <h1 class="brand">115 機械工程系學會<small>每月封面 · 行事曆</small></h1>
+    <div class="month">
+      <button class="icon" id="prev" aria-label="上個月">‹</button>
+      <b id="mlabel"></b>
+      <button class="icon" id="next" aria-label="下個月">›</button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tabCover" aria-selected="true">封面</button>
+    <button role="tab" id="tabCal" aria-selected="false">行事曆</button>
+  </nav>
+</header>
+
+<main>
+  <section class="view" id="viewCover">
+    <div class="frame"><img id="coverImg" alt="本月封面"><div class="nocover" id="noCover" hidden>這個月還沒有封面</div></div>
+    <div class="side">
+      <h2>本月封面</h2>
+      <p>下載後可直接當 IG 貼文第一張。</p>
+      <div class="btns"><button class="pri" id="coverDl">下載封面</button></div>
+      <div class="btns"><button id="goCal">看行事曆 ›</button></div>
+    </div>
+  </section>
+
+  <section class="view" id="viewCal" hidden>
+    <div class="frame" id="stage"><div id="poster"></div></div>
+    <div class="side">
+      <h2>本月行事曆</h2>
+      <div class="btns"><button class="pri" id="png">下載行事曆</button><span class="status" id="pngStatus"></span></div>
+
+      <details id="editBox">
+        <summary>編輯本月內容</summary>
+        <div class="inner">
+          <p>月曆會跟著這裡即時更新。點月曆上的日期，會在這裡加一行。修改只存在你自己的瀏覽器。</p>
+          <textarea id="lines" spellcheck="false"></textarea>
+          <ul class="fmt">
+            <li><code>10/10 國慶日</code> 單日紅底</li>
+            <li><code>10/9-10/11 國慶日 拆</code> 一格一個字</li>
+            <li><code>10/15 期中考 文字</code> 不塗紅，只寫字</li>
+            <li><code>線 10/12-10/31 停修 白</code> 期間線：白、藍、黑、紅</li>
+            <li>沒有日期開頭的行 → 上方說明區</li>
+          </ul>
+          <div class="btns"><button id="resetMonth">還原成公告版本</button></div>
+          <label>底部署名<input type="text" id="footer"></label>
+        </div>
+      </details>
+
+      <details id="ai">
+        <summary>用 AI 做新月份</summary>
+        <div class="inner aitext">
+<p>在 ChatGPT、Claude 或 Gemini 輸入：「照這個網址的說明做 11 月行事曆：https://ijioxc.github.io/calendar/」，再貼上學校行事曆文字。AI 會回一個連結，點開就是做好的月曆。</p>
+<p><b>給 AI 助手的說明</b></p>
+<p>如果你是 AI 助手，使用者給你這個網址和一段學校行事曆文字時，請照下面做：</p>
+<ol>
+<li>把行事曆文字轉成「排版指令」（規則在下面）。</li>
+<li>把排版指令組成網址，回覆給使用者。使用者點開網址就會看到做好的月曆，再按「下載行事曆」即可。</li>
+<li>另外把排版指令放在程式碼區塊裡一起回覆；網址打不開時，使用者可以貼到本頁「編輯本月內容」的文字框。</li>
+</ol>
+<p><b>網址格式</b></p>
+<pre>https://ijioxc.github.io/calendar/#年-月;第1行;第2行;第3行</pre>
+<ul>
+<li>每一行之間用半形分號 ; 分隔。空行＝兩個分號 ;;</li>
+<li>行內的空格一律改成底線 _</li>
+<li>括號一律用全形（），不要用半形括號。網址中不要出現 # ; _ 以外的特殊用途符號。</li>
+<li>網址完整寫成一行，不要換行。</li>
+</ul>
+<p><b>排版指令</b>（每行一筆）</p>
+<ul>
+<li>活動：「月/日 名稱」或「月/日-月/日 名稱」，名稱最多 4 個中文字，預設紅底白字。結尾可加「拆」＝名稱每天放一個字；「文字」＝不塗紅底只寫字。</li>
+<li>期間線：「線 月/日-月/日 短名稱 顏色」，顏色：白、藍、黑、紅。</li>
+<li>說明：不是日期開頭的行，放在月曆上方說明區，每行最多約 20 字。</li>
+</ul>
+<p><b>規則</b></p>
+<ol>
+<li>先確認該月每一天是星期幾。</li>
+<li>放假和它的補假合併成一個節日，連同中間與相連的週末一起算。例：國慶日 10/10（六）加補假 10/9（五），連到 10/11（日），寫成「10/9-10/11 國慶日 拆」。不要單獨寫「補假」。</li>
+<li>節日字數剛好等於天數時加「拆」，否則用一般紅底。</li>
+<li>跨很多天的申請期間（停修、休退學、加退選、選課等）畫成期間線，只畫本月內的部分；並在說明區寫完整名稱與完整起訖。</li>
+<li>只放和本月有關的內容。名稱用簡短常見叫法，例：「臺灣光復暨金門古寧頭大捷紀念日」→「光復節」。</li>
+<li>說明區放前面，活動與期間線放後面。</li>
+</ol>
+<p><b>完整範例（2026 年 10 月）</b></p>
+<pre>https://ijioxc.github.io/calendar/#2026-10;申請課程停修：;10/12（一）-12/24（四）;;申請休退學，學雜費退還三分之一：;10/19（一）-11/29（日）;;10/9-10/11_國慶日_拆;10/24-10/26_光復節_拆;線_10/12-10/31_課程停修_白;線_10/19-10/31_休退學_藍</pre>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<div id="shot" hidden><img id="shotImg" alt="圖片"><p>長按或右鍵圖片即可儲存</p><button id="shotClose">關閉</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+/* 公告版本：每月定稿的內容放這裡，所有人打開都看得到 */
+const MONTHS={
+'2026-10':`申請課程停修：
+10/12(一)-12/24(四)
+
+申請休退學，學雜費退還三分之一：
+10/19(一)-11/29(日)
+
+10/9-10/11 國慶日 拆
+10/24-10/26 光復節 拆
+線 10/12-10/31 課程停修 白
+線 10/19-10/31 休退學 藍`
+};
+const COVERS=[10,11,12,1,2,3,4,5,6];
+
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+const W=928,RATIO=1152/928,G={x:14.762,y:37.5,w:70.474,h:42.014};
+const WK=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const BAR={白:'#f3f3f0',藍:'#a9d4df',黑:'#232323',紅:'#7c1010'};
+const LABEL={白:'#2e2e2e',藍:'#86bccb',黑:'#232323',紅:'#7c1010'};
+const LANE=[.9,.78,.66,.54];
+const dn=(y,m,d)=>Date.UTC(y,m-1,d)/864e5;
+const fromDn=n=>{const t=new Date(n*864e5);return{y:t.getUTCFullYear(),m:t.getUTCMonth()+1,d:t.getUTCDate(),w:(t.getUTCDay()+6)%7}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+
+let cur={y:2026,m:10};
+{const t=new Date();if(t>=new Date(2026,9,1)&&t<new Date(2027,6,1))cur={y:t.getFullYear(),m:t.getMonth()+1}}
+let footer=store.get('mecal-footer')??'115 機械工程系學會';
+const mk=()=>cur.y+'-'+pad(cur.m);
+const key=()=>'mecal-'+mk();
+const loadText=()=>store.get(key())??MONTHS[mk()]??'';
+
+/* ---------- parse ---------- */
+function parseDate(s){
+  const m=s.match(/^(?:(\d{4})[\/.])?(\d{1,2})[\/.](\d{1,2})$/);if(!m)return null;
+  const mo=+m[2];let y=m[1]?+m[1]:cur.y;
+  if(!m[1]){if(mo-cur.m>6)y--;else if(cur.m-mo>6)y++}
+  return dn(y,mo,+m[3]);
+}
+function parse(text){
+  const notes=[],events=[],bars=[];
+  for(const raw of text.split('\n')){
+    const line=raw.trim();
+    if(!line){notes.push('');continue}
+    let body=line,isBar=false;
+    if(/^線\s/.test(body)){isBar=true;body=body.replace(/^線\s+/,'')}
+    const parts=body.split(/\s+/),first=parts[0].split(/[-~～–－至]/);
+    const a=first.length<=2?parseDate(first[0]):null,b=a!=null?(first[1]?parseDate(first[1]):a):null;
+    if(a==null||b==null){notes.push(line.replace(/（/g,'(').replace(/）/g,')'));continue}
+    parts.shift();
+    const s=Math.min(a,b),e=Math.max(a,b);
+    if(isBar){let c='白';if(BAR[parts[parts.length-1]])c=parts.pop();bars.push({s,e,c,l:parts.join(' ')})}
+    else{
+      let st='block',sp=false;
+      while(['文字','首','拆'].includes(parts[parts.length-1])){const o=parts.pop();if(o==='文字')st='plain';if(o==='首')st='first';if(o==='拆')sp=true}
+      if(parts.length)events.push({s,e,t:parts.join(' '),st,sp});
+    }
+  }
+  while(notes.length&&!notes[0])notes.shift();
+  while(notes.length&&!notes[notes.length-1])notes.pop();
+  bars.sort((p,q)=>p.s-q.s);
+  const ends=[];
+  for(const b of bars){let ln=ends.findIndex(x=>x<b.s);if(ln<0)ln=ends.length;ends[ln]=b.e;b.ln=Math.min(ln,3)}
+  return{notes:notes.filter((l,i)=>l||notes[i-1]).join('\n'),events,bars};
+}
+
+/* ---------- calendar render ---------- */
+const poster=$('poster');
+function layout(){
+  const first=dn(cur.y,cur.m,1),off=fromDn(first).w,dim=new Date(Date.UTC(cur.y,cur.m,0)).getUTCDate();
+  return{start:first-off,rows:Math.ceil((off+dim)/7),first};
+}
+function segs(a,b,R){a=Math.max(a,0);b=Math.min(b,R*7-1);const o=[];if(a>b)return o;
+  for(let r=Math.floor(a/7);r<=Math.floor(b/7);r++)o.push({r,c0:Math.max(a,r*7)-r*7,c1:Math.min(b,r*7+6)-r*7});return o}
+function fit(text,span,cw,ch){
+  const chars=[...text],n=chars.length;let lines;
+  if(span>1||n<=3)lines=[text];
+  else{const lc=Math.ceil(n/3),ck=Math.ceil(n/lc);lines=[];for(let i=0;i<n;i+=ck)lines.push(chars.slice(i,i+ck).join(''))}
+  const maxLen=Math.max(...lines.map(l=>[...l].length));
+  return{lines,size:Math.min(span*cw*.84/(maxLen*1.14),ch*.72/(lines.length*1.22),cw*(n===1?.62:.42))};
+}
+function render(){
+  const D=parse($('lines').value),L=layout(),R=L.rows,H=W*RATIO,cw=G.w/100*W/7,ch=G.h/100*H/R;
+  const pct=(c,r,span=1)=>`left:${c/7*100}%;top:${r/R*100}%;width:${span/7*100}%;height:${100/R}%`;
+  const fills=[],texts=[],bars=[],light=new Set(),max=R*7-1;
+  for(const ev of D.events){
+    const a=ev.s-L.start,b=ev.e-L.start;if(b<0||a>max)continue;
+    for(let i=Math.max(a,0);i<=Math.min(b,max);i++){
+      if(ev.st==='block'||(ev.st==='first'&&i===a))fills.push(`<i style="${pct(i%7,Math.floor(i/7))}"></i>`);
+      if(ev.st!=='plain')light.add(i);
+    }
+    const cls=f=>ev.st==='plain'?'plain':(ev.st==='block'||f)?'fillc':'lt';
+    const put=(idx,span,txt,f)=>{const z=fit(txt,span,cw,ch);texts.push(`<div class="et ${cls(f)}" style="${pct(idx%7,Math.floor(idx/7),span)};font-size:calc(var(--u)*${z.size.toFixed(2)})">${z.lines.map(esc).join('<br>')}</div>`)};
+    if(ev.sp){
+      const chars=[...ev.t],days=b-a+1;
+      for(let i=0;i<days;i++){const p=i<days-1?(chars[i]||''):chars.slice(i).join('');const idx=a+i;if(p&&idx>=0&&idx<=max)put(idx,1,p,i===0)}
+    }else{const s0=segs(a,b,R)[0];if(s0)put(s0.r*7+s0.c0,s0.c1-s0.c0+1,ev.t,true)}
+  }
+  for(const b of D.bars){
+    segs(b.s-L.start,b.e-L.start,R).forEach((s,i)=>{
+      const top=(s.r+LANE[b.ln])/R*100;
+      bars.push(`<div class="bar" style="left:${s.c0/7*100}%;width:${(s.c1-s.c0+1)/7*100}%;top:${top}%;border-color:${BAR[b.c]}"></div>`);
+      if(i===0&&b.l)bars.push(`<div class="blabel" style="top:${top}%;color:${LABEL[b.c]}">${esc(b.l)}</div>`);
+    });
+  }
+  const cells=[];
+  for(let i=0;i<R*7;i++){
+    const o=fromDn(L.start+i),inM=o.m===cur.m,before=L.start+i<L.first;
+    const label=(i===0&&o.d!==1)||(o.d===1&&!inM)?o.m+'/'+o.d:o.d;
+    const c=['cell'];if(i%7===6)c.push('lc');if(Math.floor(i/7)===R-1)c.push('lr');if(!inM)c.push('adj');
+    cells.push(`<div class="${c.join(' ')}" data-i="${i}">${inM||before?`<span class="num${light.has(i)?' lt':''}">${label}</span>`:''}</div>`);
+  }
+  const rect=`left:${G.x}%;top:${G.y}%;width:${G.w}%;height:${G.h}%`;
+  poster.innerHTML=
+    `<div class="notes">${esc(D.notes)}</div><div class="footer">${esc(footer)}</div>`+
+    `<div class="wk" style="left:${G.x}%;width:${G.w}%;top:calc(${G.y}% - var(--u)*31);height:calc(var(--u)*31)">${WK.map(n=>`<span>${n}</span>`).join('')}</div>`+
+    `<div class="fills" style="${rect}">${fills.join('')}</div>`+
+    `<div class="layer" style="${rect};grid-template-rows:repeat(${R},1fr)">${cells.join('')}</div>`+
+    `<div class="fx" style="${rect}">${texts.join('')}${bars.join('')}</div>`;
+}
+function fitPoster(){
+  if($('viewCal').hidden)return;
+  const aw=$('stage').clientWidth,ah=innerHeight-150;
+  const w=Math.max(260,Math.min(aw,ah/RATIO,640));
+  poster.style.width=w+'px';poster.style.height=(w*RATIO)+'px';poster.style.setProperty('--u',(w/W)+'px');
+}
+
+/* ---------- cover ---------- */
+function showCover(){
+  const has=COVERS.includes(cur.m);
+  $('coverImg').hidden=!has;$('noCover').hidden=has;$('coverDl').disabled=!has;
+  if(has)$('coverImg').src='covers/'+cur.m+'.jpg';
+}
+
+/* ---------- month / tabs ---------- */
+function showMonth(){
+  $('mlabel').textContent=cur.y+' · '+pad(cur.m);
+  $('lines').value=loadText();$('resetMonth').disabled=store.get(key())==null;
+  showCover();render();
+}
+function step(d){let m=cur.m+d,y=cur.y;if(m<1){m=12;y--}if(m>12){m=1;y++}cur={y,m};showMonth()}
+function tab(which){
+  const cal=which==='cal';
+  $('viewCover').hidden=cal;$('viewCal').hidden=!cal;
+  $('tabCover').setAttribute('aria-selected',!cal);$('tabCal').setAttribute('aria-selected',cal);
+  fitPoster();
+}
+$('prev').onclick=()=>step(-1);$('next').onclick=()=>step(1);
+$('tabCover').onclick=()=>tab('cover');$('tabCal').onclick=()=>tab('cal');$('goCal').onclick=()=>tab('cal');
+
+/* ---------- edit ---------- */
+$('lines').addEventListener('input',()=>{store.set(key(),$('lines').value);$('resetMonth').disabled=false;render()});
+$('resetMonth').onclick=()=>{store.del(key());showMonth()};
+$('footer').value=footer;
+$('footer').addEventListener('input',()=>{footer=$('footer').value;store.set('mecal-footer',footer);render()});
+$('editBox').addEventListener('toggle',()=>poster.classList.toggle('editing',$('editBox').open));
+poster.addEventListener('click',e=>{
+  if(!$('editBox').open)return;
+  const c=e.target.closest('.cell');if(!c)return;
+  const o=fromDn(layout().start+ +c.dataset.i),ta=$('lines');
+  ta.value=ta.value.replace(/\s*$/,'')+'\n'+o.m+'/'+o.d+' ';
+  store.set(key(),ta.value);render();ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);ta.scrollTop=ta.scrollHeight;
+});
+
+/* ---------- data from link (made by AI) ---------- */
+function fromHash(){
+  let h=location.hash.slice(1);if(!h)return false;
+  try{h=decodeURIComponent(h)}catch(e){}
+  const parts=h.split(';'),m=parts[0].match(/^(\d{4})-(\d{1,2})$/);if(!m)return false;
+  cur={y:+m[1],m:+m[2]};
+  if(parts.length>1)store.set(key(),parts.slice(1).map(l=>l.replace(/_/g,' ')).join('\n'));
+  history.replaceState(null,'',location.pathname);
+  return true;
+}
+addEventListener('hashchange',()=>{if(fromHash()){showMonth();tab('cal')}});
+
+/* ---------- downloads ---------- */
+const inApp=/iPhone|iPad|Android|Line\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
+function save(blob,name){
+  if(inApp){$('shotImg').src=URL.createObjectURL(blob);$('shot').hidden=false;return false}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);return true;
+}
+$('shotClose').onclick=()=>{$('shot').hidden=true};
+$('coverDl').onclick=async()=>{
+  const r=await fetch('covers/'+cur.m+'.jpg');save(await r.blob(),`封面-${mk()}.jpg`);
+};
+$('png').onclick=async()=>{
+  const btn=$('png'),st=$('pngStatus');btn.disabled=true;st.className='status';st.textContent='產生中…';
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const canvas=await html2canvas(poster,{scale:1856/poster.offsetWidth,backgroundColor:null,logging:false,useCORS:true});
+    const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+    const done=save(blob,`行事曆-${mk()}.png`);
+    st.className='status ok';st.textContent=done?'已下載。':'';
+  }catch(err){st.textContent='圖片產生失敗，請再試一次。'}
+  btn.disabled=false;
+};
+
+addEventListener('resize',fitPoster);
+const fromLink=fromHash();
+showMonth();
+tab(fromLink?'cal':'cover');
+if(document.fonts)document.fonts.ready.then(render);
+</script>
+</body>
+</html>
