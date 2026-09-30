@@ -181,6 +181,7 @@ label{display:grid;gap:4px;font-size:12.5px;color:var(--dim)}
 <li>跨很多天的申請期間（停修、休退學、加退選、選課等）畫成期間線，只畫本月內的部分；並在說明區寫完整名稱與完整起訖。</li>
 <li>只放和本月有關的內容。名稱用簡短常見叫法，例：「臺灣光復暨金門古寧頭大捷紀念日」→「光復節」。</li>
 <li>說明區放前面，活動與期間線放後面。</li>
+<li>月底最後一天如果剛好是星期一（例如 2026/11/30），那天不顯示在本月，要寫進下個月的排版指令。做下個月時，上個月的這一天也可以寫進去。</li>
 </ol>
 <p><b>完整範例（2026 年 10 月）</b></p>
 <pre>https://ijioxc.github.io/calendar/#2026-10;申請課程停修：;10/12（一）-12/24（四）;;申請休退學，學雜費退還三分之一：;10/19（一）-11/29（日）;;10/9-10/11_國慶日_拆;10/24-10/26_光復節_拆;線_10/12-10/31_課程停修_白;線_10/19-10/31_休退學_藍</pre>
@@ -267,7 +268,9 @@ function parse(text){
 const poster=$('poster');
 function layout(){
   const first=dn(cur.y,cur.m,1),off=fromDn(first).w,dim=new Date(Date.UTC(cur.y,cur.m,0)).getUTCDate();
-  return{start:first-off,rows:Math.ceil((off+dim)/7),first};
+  let rows=Math.ceil((off+dim)/7);
+  if(off+dim-(rows-1)*7===1)rows--; // 月底只剩一天時不另開一列，那天放到下個月的第一列
+  return{start:first-off,rows,first};
 }
 function segs(a,b,R){a=Math.max(a,0);b=Math.min(b,R*7-1);const o=[];if(a>b)return o;
   for(let r=Math.floor(a/7);r<=Math.floor(b/7);r++)o.push({r,c0:Math.max(a,r*7)-r*7,c1:Math.min(b,r*7+6)-r*7});return o}
