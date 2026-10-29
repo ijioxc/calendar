@@ -127,7 +127,7 @@ button.plain{align-self:start;background:none;padding:0;min-height:44px;color:va
 .num.lt{color:#f1e4e4}
 .cell.adj .num{opacity:.5}
 .et{display:flex;align-items:center;justify-content:center;text-align:center;padding-top:calc(var(--u)*13);font-weight:100;line-height:1.22;letter-spacing:.12em;text-indent:.12em}
-.et.fillc{color:#f7eded}.et.plain{color:var(--red);font-weight:400}.et.lt{color:rgba(250,250,247,.93)}
+.et.wide{letter-spacing:.8em;text-indent:.8em}.et.fillc{color:#f7eded}.et.plain{color:var(--red);font-weight:400}.et.lt{color:rgba(250,250,247,.93)}
 .bar{height:calc(var(--u)*4.4);border-top:calc(var(--u)*1.4) solid;border-bottom:calc(var(--u)*1.4) solid;transform:translateY(-50%)}
 .blabel{right:100%;transform:translateY(-100%);padding-bottom:calc(var(--u)*3);font-weight:400;font-size:calc(var(--u)*15.5);letter-spacing:.3em;white-space:nowrap;padding-right:calc(var(--u)*8)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -330,7 +330,7 @@ function render(){
       if(ev.st!=='plain')light.add(i);
     }
     const cls=f=>ev.st==='plain'?'plain':(ev.st==='block'||f)?'fillc':'lt';
-    const put=(idx,span,txt,f)=>{const z=fit(txt,span,cw,ch);texts.push(`<div class="et ${cls(f)}" style="${pct(idx%7,Math.floor(idx/7),span)};font-size:calc(var(--u)*${z.size.toFixed(2)})">${z.lines.map(esc).join('<br>')}</div>`)};
+    const put=(idx,span,txt,f)=>{const z=fit(txt,span,cw,ch);texts.push(`<div class="et ${cls(f)}${span>1?' wide':''}" style="${pct(idx%7,Math.floor(idx/7),span)};font-size:calc(var(--u)*${z.size.toFixed(2)})">${z.lines.map(esc).join('<br>')}</div>`)};
     if(ev.sp){
       const chars=[...ev.t],days=b-a+1;
       for(let i=0;i<days;i++){const p=i<days-1?(chars[i]||''):chars.slice(i).join('');const idx=a+i;if(p&&idx>=0&&idx<=max)put(idx,1,p,i===0)}
@@ -356,7 +356,7 @@ function render(){
     `<div class="wk" style="left:${G.x}%;width:${G.w}%;top:calc(${G.y}% - var(--u)*31);height:calc(var(--u)*31)">${WK.map(n=>`<span>${n}</span>`).join('')}</div>`+
     `<div class="fills" style="${rect}">${fills.join('')}</div>`+
     `<div class="layer" style="${rect};grid-template-rows:repeat(${R},1fr)">${cells.join('')}</div>`+
-    `<div class="fx" style="${rect}">${texts.join('')}${bars.join('')}</div>`;
+    `<div class="fx" style="${rect}">${bars.join('')}${texts.join('')}</div>`;
 }
 function fitPoster(){
   if($('viewCal').hidden)return;
