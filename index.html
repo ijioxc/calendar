@@ -330,7 +330,7 @@ function render(){
       if(ev.st!=='plain')light.add(i);
     }
     const cls=f=>ev.st==='plain'?'plain':(ev.st==='block'||f)?'fillc':'lt';
-    const put=(idx,span,txt,f)=>{const z=fit(txt,span,cw,ch);texts.push(`<div class="et ${cls(f)}${span>1?' wide':''}" style="${pct(idx%7,Math.floor(idx/7),span)};font-size:calc(var(--u)*${z.size.toFixed(2)})">${z.lines.map(esc).join('<br>')}</div>`)};
+    const put=(idx,span,txt,f)=>{const z=fit(txt,span,cw,ch);texts.push(`<div class="et ${cls(f)}${span>[...txt].length?' wide':''}" style="${pct(idx%7,Math.floor(idx/7),span)};font-size:calc(var(--u)*${z.size.toFixed(2)})">${z.lines.map(esc).join('<br>')}</div>`)};
     if(ev.sp){
       const chars=[...ev.t],days=b-a+1;
       for(let i=0;i<days;i++){const p=i<days-1?(chars[i]||''):chars.slice(i).join('');const idx=a+i;if(p&&idx>=0&&idx<=max)put(idx,1,p,i===0)}
